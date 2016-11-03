@@ -490,6 +490,7 @@ void draw_scene(video::IVideoDriver *driver, scene::ISceneManager *smgr,
 
 	std::string draw_mode = g_settings->get("3d_mode");
 
+	//Insert code for projection matrix here
 	smgr->drawAll();
 
 	if (draw_mode == "anaglyph")
@@ -523,6 +524,7 @@ void draw_scene(video::IVideoDriver *driver, scene::ISceneManager *smgr,
 		draw_crosshair = false;
 		show_hud = false;
 	}
+	//This is set as the standard render-routine
 	else {
 		draw_plain(camera, show_hud, hud, driver,
 				draw_wield_tool, client, guienv);
