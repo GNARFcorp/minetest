@@ -490,7 +490,14 @@ void draw_scene(video::IVideoDriver *driver, scene::ISceneManager *smgr,
 
 	std::string draw_mode = g_settings->get("3d_mode");
 
-	//Insert code for projection matrix here
+	//Insert code for projection matrix here. It would probably look like this:
+	/*
+	core::matrix4 ProjMatrix;
+	ProjMatrix.buildProjectionMatrixOrthoLH(16.0f,12.0f,3.5f,-3.5f);
+	driver->setTransform(video::ETS_PROJECTION, ProjMatrix);
+	driver->setTransform(video::ETS_VIEW, ProjMatrix);
+	driver->setTransform(video::ETS_WORLD, ProjMatrix);
+	*/
 	smgr->drawAll();
 
 	if (draw_mode == "anaglyph")
