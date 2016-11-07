@@ -453,6 +453,26 @@ void draw_pageflip_3d_mode(Camera& camera, bool show_hud,
 	camera.getCameraNode()->setTarget(oldTarget);
 }
 
+void draw_ortho(Camera &camera, bool show_hud, Hud &hud,
+		video::IVideoDriver *driver, scene::ISceneManager* smgr,
+		const v2u32& screensize,
+		bool draw_wield_tool, Client &client, gui::IGUIEnvironment *guienv)
+{
+	core::matrix4 ProjMatrix;
+	//Build orthogrphic projection matrix. Still needs tinkering
+	ProjMatrix.buildProjectionMatrixOrthoLH(16.0f,12.0f,3.5f,-3.5f);
+	driver->setTransform(video::ETS_WORLD, core::IdentityMatrix);
+	camera.getCameraNode()->setProjectionMatrix(ProjMatrix, true);
+	smgr->drawAll();
+	//TODO: Place camera in a sane manner
+	if (show_hud) {
+		hud.drawSelectionMesh();
+		if (draw_wield_tool) {
+			camera.drawWieldedTool();
+		}
+	}
+}
+
 void draw_plain(Camera &camera, bool show_hud, Hud &hud,
 		video::IVideoDriver *driver, bool draw_wield_tool,
 		Client &client, gui::IGUIEnvironment *guienv)
@@ -528,6 +548,13 @@ void draw_scene(video::IVideoDriver *driver, scene::ISceneManager *smgr,
 	{
 		draw_pageflip_3d_mode(camera, show_hud, hud, driver,
 				smgr, screensize, draw_wield_tool, client, guienv, skycolor);
+		draw_crosshair = false;
+		show_hud = false;
+	}
+	else if (draw_mode == "orthographic")
+	{
+		draw_ortho(camera, show_hud, hud, driver,
+				smgr, screensize, draw_wield_tool, client, guienv);
 		draw_crosshair = false;
 		show_hud = false;
 	}
