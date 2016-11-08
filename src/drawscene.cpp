@@ -460,15 +460,14 @@ void draw_ortho(Camera &camera, bool show_hud, Hud &hud,
 {
 	core::matrix4 ProjMatrix;
 	//Build orthogrphic projection matrix. Still needs tinkering
-	ProjMatrix.buildProjectionMatrixOrthoLH(16.0f,12.0f,3.5f,-3.5f);
-	driver->setTransform(video::ETS_WORLD, core::IdentityMatrix);
-	camera.getCameraNode()->setProjectionMatrix(ProjMatrix, true);
+	ProjMatrix.buildProjectionMatrixOrthoLH(160.0f,120.0f,-500,1000);
+	camera.getCameraNode()->setProjectionMatrix(ProjMatrix, false);
+	driver->beginScene(true, true, irr::video::SColor(200, 200, 200, 255));
 	smgr->drawAll();
+	driver->setTransform(video::ETS_WORLD, core::IdentityMatrix);
 	//TODO: Place camera in a sane manner
 	if (show_hud) {
 		hud.drawSelectionMesh();
-		if (draw_wield_tool) {
-			camera.drawWieldedTool();
 		}
 	}
 }
@@ -556,7 +555,6 @@ void draw_scene(video::IVideoDriver *driver, scene::ISceneManager *smgr,
 		draw_ortho(camera, show_hud, hud, driver,
 				smgr, screensize, draw_wield_tool, client, guienv);
 		draw_crosshair = false;
-		show_hud = false;
 	}
 	//This is set as the standard render-routine
 	else {
