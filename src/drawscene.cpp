@@ -285,7 +285,6 @@ void draw_sidebyside_3d_mode(Camera& camera, bool show_hud,
 			focusPoint, show_hud, driver, camera, smgr, hud,
 			draw_wield_tool, client, guienv, skycolor);
 
-	/* create right view */
 	video::ITexture* right_image = draw_image(screensize, RIGHT, startMatrix,
 			focusPoint, show_hud, driver, camera, smgr, hud,
 			draw_wield_tool, client, guienv, skycolor);
@@ -460,15 +459,27 @@ void draw_ortho(Camera &camera, bool show_hud, Hud &hud,
 {
 	core::matrix4 ProjMatrix;
 	//Build orthogrphic projection matrix. Still needs tinkering
-	ProjMatrix.buildProjectionMatrixOrthoLH(160.0f,120.0f,-500,1000);
+	ProjMatrix.buildProjectionMatrixOrthoLH(screensize.X,screensize.Y,0,1000);
 	camera.getCameraNode()->setProjectionMatrix(ProjMatrix, false);
+	irr::core::matrix4 startMatrix = camera.getCameraNode()->getAbsoluteTransformation();
+
+	irr::core::vector3df cameraMatrix;
+	irr::core::matrix4 moveMatrix;
+	moveMatrix.setTranslation(irr::core::vector3df(0.0f, 30.0f, 30.0f));
+	//TODO: Implement zoom factor:
+	//leftMove.setTranslation(irr::core::vector3df(0.0f, zoom, zoom));
+	cameraMatrix = (startMatrix * moveMatrix).getTranslation();
+
+	camera.getCameraNode()->setPosition(cameraMatrix);
+	//We want to focuse the player
+	camera.getCameraNode()->setTarget(startMatrix.getTranslation());
+
 	driver->beginScene(true, true, irr::video::SColor(200, 200, 200, 255));
 	smgr->drawAll();
 	driver->setTransform(video::ETS_WORLD, core::IdentityMatrix);
 	//TODO: Place camera in a sane manner
 	if (show_hud) {
 		hud.drawSelectionMesh();
-		}
 	}
 }
 
