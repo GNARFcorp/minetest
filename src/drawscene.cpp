@@ -458,21 +458,19 @@ void draw_ortho(Camera &camera, bool show_hud, Hud &hud,
 		bool draw_wield_tool, Client &client, gui::IGUIEnvironment *guienv)
 {
 	core::matrix4 ProjMatrix;
+        core::matrix4 ShearMatrix;
+        float shear = 0.5f;
+        ShearMatrix[0] = 1;
+        ShearMatrix[5] = 1;
+        ShearMatrix[10] = 1;
+        ShearMatrix[15] = 1;
+
+        ShearMatrix[4] = shear;
+        
 	//Build orthogrphic projection matrix. Still needs tinkering
-	ProjMatrix.buildProjectionMatrixOrthoLH(screensize.X,screensize.Y,0,1000);
+	ProjMatrix.buildProjectionMatrixOrthoLH(screensize.X/10.0,screensize.Y/10.0,0,1000);
+        ProjMatrix = ShearMatrix * ProjMatrix;
 	camera.getCameraNode()->setProjectionMatrix(ProjMatrix, false);
-	irr::core::matrix4 startMatrix = camera.getCameraNode()->getAbsoluteTransformation();
-
-	irr::core::vector3df cameraMatrix;
-	irr::core::matrix4 moveMatrix;
-	moveMatrix.setTranslation(irr::core::vector3df(0.0f, 30.0f, 30.0f));
-	//TODO: Implement zoom factor:
-	//leftMove.setTranslation(irr::core::vector3df(0.0f, zoom, zoom));
-	cameraMatrix = (startMatrix * moveMatrix).getTranslation();
-
-	camera.getCameraNode()->setPosition(cameraMatrix);
-	//We want to focuse the player
-	camera.getCameraNode()->setTarget(startMatrix.getTranslation());
 
 	driver->beginScene(true, true, irr::video::SColor(200, 200, 200, 255));
 	smgr->drawAll();
@@ -520,14 +518,6 @@ void draw_scene(video::IVideoDriver *driver, scene::ISceneManager *smgr,
 
 	std::string draw_mode = g_settings->get("3d_mode");
 
-	//Insert code for projection matrix here. It would probably look like this:
-	/*
-	core::matrix4 ProjMatrix;
-	ProjMatrix.buildProjectionMatrixOrthoLH(16.0f,12.0f,3.5f,-3.5f);
-	driver->setTransform(video::ETS_PROJECTION, ProjMatrix);
-	driver->setTransform(video::ETS_VIEW, ProjMatrix);
-	driver->setTransform(video::ETS_WORLD, ProjMatrix);
-	*/
 	smgr->drawAll();
 
 	if (draw_mode == "anaglyph")
