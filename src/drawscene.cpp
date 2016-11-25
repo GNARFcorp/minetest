@@ -459,16 +459,15 @@ void draw_ortho(Camera &camera, bool show_hud, Hud &hud,
 {
 	core::matrix4 ProjMatrix;
         core::matrix4 ShearMatrix;
-        float shear = 0.5f;
-        ShearMatrix[0] = 1;
-        ShearMatrix[5] = 1;
-        ShearMatrix[10] = 1;
-        ShearMatrix[15] = 1;
+        float shear = 0.7;
 
-        ShearMatrix[4] = shear;
+        ShearMatrix.makeIdentity();
+        ShearMatrix[8] = shear; //or 2, not sure
+        ShearMatrix[9] = shear; //or 6, not sure
+
         
 	//Build orthogrphic projection matrix. Still needs tinkering
-	ProjMatrix.buildProjectionMatrixOrthoLH(screensize.X/10.0,screensize.Y/10.0,0,1000);
+	ProjMatrix.buildProjectionMatrixOrthoLH(screensize.X/10.0,screensize.Y/10.0,0,1000); 
         ProjMatrix = ShearMatrix * ProjMatrix;
 	camera.getCameraNode()->setProjectionMatrix(ProjMatrix, false);
 
